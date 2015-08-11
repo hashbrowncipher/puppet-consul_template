@@ -3,14 +3,25 @@
 # Creates an init script and starts the service.
 #
 class consul_template::service {
+  exec { 'service consul-template stop':
+  } ->
   file { '/etc/init.d/consul-template':
-    ensure => present,
-    group  => '0',
-    mode   => '0755',
-    owner  => '0',
-    source => 'puppet:///modules/consul_template/consul-template',
-  }
-
+    ensure => 'link',
+    target => '/lib/init/upstart-job',
+  } ->
+  file { '/nail/etc/init/consul-template.conf':
+    ensure => 'file',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0444',
+  } ->
+  file { '/etc/init/consul-template.conf':
+    ensure => 'file',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0444',
+    source => 'puppet:///modules/consul_template/upstart.conf',
+  } ->
   service { 'consul-template':
     ensure  => 'running',
     enable  => true,
