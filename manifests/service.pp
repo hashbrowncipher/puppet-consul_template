@@ -3,8 +3,6 @@
 # Creates an init script and starts the service.
 #
 class consul_template::service {
-  exec { 'service consul-template stop':
-  } ->
   file { '/etc/init.d/consul-template':
     ensure => 'link',
     target => '/lib/init/upstart-job',
